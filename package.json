@@ -1,6 +1,6 @@
 {
   "name": "@ocopjs/app-graphql-playground",
-  "description": "OcopJS - Ứng dụng GraphQL Playground.",
+  "description": "OcopJS - Ứng dụng GraphQL Playground. 🇻🇳",
   "version": "1.0.1",
   "author": "ocopjs",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "license": "Apache-2.0",
-  "homepage": "https://ocopee.com",
+  "homepage": "https://docs.ocopee.com/docs/ocopjs/references/app-graphql-playground",
   "publishConfig": {
     "access": "public"
   },
