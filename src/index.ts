@@ -1,12 +1,13 @@
-const express = require("express");
-const {
-  renderPlaygroundPage,
-} = require("@apollographql/graphql-playground-html");
-const playgroundPkg = require("@apollographql/graphql-playground-react/package.json");
-const falsey = require("falsey");
-const { addDevQueryMiddlewares } = require("./lib/devQuery");
+import express, { query } from "express";
+import { renderPlaygroundPage } from "@apollographql/graphql-playground-html";
+import playgroundPkg from "@apollographql/graphql-playground-react/package.json";
+import falsey from "falsey";
+import { addDevQueryMiddlewares } from "./lib/devQuery";
 
 class GraphQLPlaygroundApp {
+  _apiPath: string;
+  _graphiqlPath: string;
+
   constructor({
     apiPath = "/admin/api",
     graphiqlPath = "/admin/graphiql",
@@ -18,7 +19,7 @@ class GraphQLPlaygroundApp {
   /**
    * @return Array<middlewares>
    */
-  getMiddleware({ dev }) {
+  getMiddleware({ dev }: { dev: boolean }) {
     const graphiqlPath = this._graphiqlPath;
     const apiPath = this._apiPath;
     const app = express();
@@ -30,8 +31,8 @@ class GraphQLPlaygroundApp {
 
     const endpoint = apiPath;
     app.get(graphiqlPath, (req, res) => {
-      const tab = { endpoint };
-      if (req.query && req.query.query) {
+      let tab: any = { endpoint };
+      if (req?.query?.query) {
         tab.query = req.query.query;
         tab.variables = req.query.variables;
       }
