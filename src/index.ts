@@ -1,10 +1,43 @@
 import express, { query } from "express";
 import { renderPlaygroundPage } from "@apollographql/graphql-playground-html";
-import playgroundPkg from "@apollographql/graphql-playground-react/package.json";
-import falsey from "falsey";
+import { readFileSync } from "fs";
 import { addDevQueryMiddlewares } from "./lib/devQuery";
 
-class GraphQLPlaygroundApp {
+export function falsey(val: any, keywords?: any) {
+  if (!val) return true;
+  let words = keywords || [
+    "0",
+    "false",
+    "nada",
+    "nil",
+    "nay",
+    "nah",
+    "negative",
+    "no",
+    "none",
+    "nope",
+    "nul",
+    "null",
+    "nix",
+    "nyet",
+    "uh-uh",
+    "veto",
+    "zero",
+  ];
+  if (!Array.isArray(words)) words = [words];
+  const lower = typeof val === "string" ? val.toLowerCase() : null;
+  for (const word of words) {
+    if (word === val) {
+      return true;
+    }
+    if (word === lower) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export class GraphQLPlaygroundApp {
   _apiPath: string;
   _graphiqlPath: string;
 
@@ -36,8 +69,12 @@ class GraphQLPlaygroundApp {
         tab.query = req.query.query;
         tab.variables = req.query.variables;
       }
-
-      res.setHeader("Content-Type", "text/html");
+      const playgroundPkg = JSON.parse(
+        readFileSync(
+          "./node_modules/@apollographql/graphql-playground-react/package.json",
+          "utf8",
+        ),
+      );
       res.write(
         renderPlaygroundPage({
           endpoint,
@@ -57,7 +94,3 @@ class GraphQLPlaygroundApp {
    */
   build() {}
 }
-
-module.exports = {
-  GraphQLPlaygroundApp,
-};

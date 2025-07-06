@@ -15,7 +15,7 @@ import bodyParser from "body-parser";
 
 const buildGraphiqlQueryParams = ({ query = {}, variables = {} }) => {
   const params = new URLSearchParams();
-  params.set("query", query);
+  params.set("query", query as any);
   params.set("variables", JSON.stringify(variables));
 
   return params.toString();
@@ -28,7 +28,8 @@ const buildGraphiqlQueryParams = ({ query = {}, variables = {} }) => {
 //  });
 
 const graphiqlDevQueryMiddleware =
-  (graphiqlPath, devQueryPath, devQueryLog) => (req, res, next) => {
+  (graphiqlPath: any, devQueryPath: any, devQueryLog: any) =>
+  (req: any, _res: any, next: any) => {
     if (
       // Skip requests from graphiql itself
       (req.headers.referer && req.headers.referer.includes(graphiqlPath)) ||
@@ -49,7 +50,8 @@ const graphiqlDevQueryMiddleware =
     const ast = gql(req?.body?.query);
 
     const operations = ast.definitions.map(
-      (def) => `${def.operation} ${def.name ? `${def.name.value} ` : ""}{ .. }`,
+      (def: any) =>
+        `${def.operation} ${def.name ? `${def.name.value} ` : ""}{ .. }`,
     );
 
     // Make the queries clickable in the terminal where supported
@@ -72,7 +74,7 @@ const graphiqlDevQueryMiddleware =
   };
 
 const graphiqlDevQueryRedirector =
-  (graphiqlPath, devQueryLog) => (req, res) => {
+  (graphiqlPath: any, devQueryLog: any) => (req: any, res: any) => {
     const { id } = req.query;
     if (!devQueryLog[id]) {
       const queryParams = buildGraphiqlQueryParams({
@@ -84,10 +86,10 @@ const graphiqlDevQueryRedirector =
   };
 
 export const addDevQueryMiddlewares = (
-  app,
-  apiPath,
-  graphiqlPath,
-  devQueryPath,
+  app: any,
+  apiPath: any,
+  graphiqlPath: any,
+  devQueryPath: any,
 ) => {
   // Needed to read the body contents out below
   app.use(bodyParser.json());
